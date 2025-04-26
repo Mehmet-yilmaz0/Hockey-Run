@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public GameObject EventManager;
     public bool GameStart = false;
     public float PlayTime = 0;
+    public float PlaySpeed = 1;
     //player state
     public bool IsDead=false;
     //canvas
@@ -35,11 +36,14 @@ public class GameManager : MonoBehaviour
             PlayTime += Time.deltaTime;
             TimeText.text = (Mathf.Abs(PlayTime).ToString());
         }
-        DeadFonk();
     }
 
     public void GameStartFonk()
     {
+        if (IsDead)
+        {
+            EventManager.GetComponent<EventManager>().EventReset();
+        }
         IsDead = false;
         MainMenu.SetActive(false);
         DeadMenu.SetActive(false);
@@ -47,42 +51,41 @@ public class GameManager : MonoBehaviour
         start.transform.position = StartPosition;
         Player.transform.position = StartPosition;
         EventManager.SetActive(true);
-        //EventManager.GetComponent<EventManager>().Reset();
         GameStart = true;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Player")
         {
             IsDead = true;
+            DeadFonk();
         }
     }
-    private void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
             Debug.Log("oyuncu oldu");
             IsDead = true;
+            DeadFonk();
+            
         }
     }
     public void DeadFonk()
     {
-        if (IsDead)
+        if (PlayerPrefs.GetInt("MaxScore") != null)
         {
-            if (PlayerPrefs.GetInt("MaxScore") != null)
+            if (PlayerPrefs.GetInt("MaxScore") < Convert.ToInt32(TimeText.GetComponent<TextMeshPro>()))
             {
-                if (PlayerPrefs.GetInt("MaxScore") < Convert.ToInt32(TimeText.GetComponent<TextMeshPro>()))
-                {
-                    PlayerPrefs.SetInt("MaxScore", Mathf.Abs((Convert.ToInt32(TimeText.GetComponent<TextMeshPro>()))));
-                }
+                PlayerPrefs.SetInt("MaxScore", Mathf.Abs((Convert.ToInt32(TimeText.GetComponent<TextMeshPro>()))));
             }
-            PlayerPrefs.Save();
-            MainMenu.SetActive(false);
-            DeadMenu.SetActive(true);
-            TimeText.gameObject.SetActive(false);
-            EventManager.gameObject.SetActive(false);
         }
+        PlayerPrefs.Save();
+        MainMenu.SetActive(false);
+        DeadMenu.SetActive(true);
+        TimeText.gameObject.SetActive(false);
+        EventManager.gameObject.SetActive(false);
     }
 
     public void OnApplicationQuit()

@@ -64,7 +64,6 @@ public class CharacterMovement : MonoBehaviour
                 GoLeft = false;
                 if(road!=0) {RoadState--;}
                 road = 0;
-                
             }
         }
     }

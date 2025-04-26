@@ -12,6 +12,8 @@ public class EventManager : MonoBehaviour
     public GameObject StartEvent;
     public Vector3 EventCursor;
     int first=1;
+    public float gamespeed=1;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void OnEnable()
     {
@@ -32,19 +34,22 @@ public class EventManager : MonoBehaviour
     {
         foreach (GameObject obj in ActEvents)
         {
-            obj.transform.position = new Vector3 (obj.transform.position.x, obj.transform.position.y, obj.transform.position.z-0.01f);
+            obj.transform.position = new Vector3 (obj.transform.position.x, obj.transform.position.y, obj.transform.position.z-(0.01f * gamespeed));
         }
-        StartEvent.transform.position = new Vector3(StartEvent.transform.position.x, StartEvent.transform.position.y, StartEvent.transform.position.z - 0.01f);
+        StartEvent.transform.position = new Vector3(StartEvent.transform.position.x, StartEvent.transform.position.y, StartEvent.transform.position.z - (0.01f*gamespeed));
     }
 
-    public void Reset()
+    public void EventReset()
     {
         foreach(GameObject obj in ActEvents)
         {
-            ActEvents.Remove(obj);
-            Destroy(obj);
-            EventCursor = StartEvent.transform.position;
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
         }
+        ActEvents.Clear();
+        EventCursor = StartEvent.transform.position;
     }
 
     public void DeleteEvent(GameObject OldEvent)
