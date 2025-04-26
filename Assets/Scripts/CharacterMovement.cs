@@ -4,9 +4,6 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     Rigidbody rb;
-    public Vector3 left;
-    public Vector3 right;
-    public Vector3 mid;
     public Vector2 startTouchPosition;
     public Vector2 endTouchPosition;
     public float swipeThreshold = 50f;
@@ -139,6 +136,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (IsGrounded)
         {
+            Debug.Log("asd");
             rb.AddForce(Vector3.up*JumpPower,ForceMode.Impulse);
         }
     }
@@ -150,7 +148,13 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision == null) return;
+        if (collision.gameObject.tag == "Platform")
+        {
+            IsGrounded = true;
+        }
+    }
+    private void OnCollisionStay(Collision collision)
+    {
         if (collision.gameObject.tag == "Platform")
         {
             IsGrounded = true;
